@@ -25,7 +25,7 @@ class NetworkModule {
         return OkHttpClient.Builder()
 //            .addInterceptor(authInterceptor)  // We will add this in providesStudentApi()
             .readTimeout(30, TimeUnit.SECONDS)  // default is 10 sec
-            .writeTimeout(30, TimeUnit.SECONDS) // default is 10 sec
+            .writeTimeout(10, TimeUnit.SECONDS) // default is 10 sec
     }
 
     @Provides

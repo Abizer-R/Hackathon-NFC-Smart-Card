@@ -3,21 +3,28 @@ package com.example.nfcsmartcard.ui
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.nfc.NfcAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.nfcsmartcard.R
+import com.example.nfcsmartcard.data.network.model.studentDetailModel.StudentDetailsResponse
 import com.example.nfcsmartcard.databinding.ActivityScannerBinding
+import com.example.nfcsmartcard.utils.Constants.BASE64_IMAGE_TESTING
+import com.example.nfcsmartcard.utils.Constants.SUCCESSFUL_KEY
 import com.example.nfcsmartcard.utils.NetworkResult
 import com.example.nfcsmartcard.utils.NfcUtil
 import com.example.nfcsmartcard.utils.ScanStatus
 import com.example.nfcsmartcard.utils.TokenManager
 import com.example.nfcsmartcard.viewModels.StudentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,6 +40,8 @@ class ScannerActivity : AppCompatActivity() {
     @Inject
     lateinit var tokenManager: TokenManager
 
+    private lateinit var conductorBusRoute: String
+
     // FOR NFC STUFF
     private lateinit var pendingIntent: PendingIntent
     private lateinit var readFilters: Array<IntentFilter>
@@ -42,14 +51,20 @@ class ScannerActivity : AppCompatActivity() {
         _binding = ActivityScannerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        studentViewModel.getStudentListResponse()
+
+//        convertBase64Testing()
+
+        // TODO: This is removed
+//        studentViewModel.getStudentListResponse()
+
+        conductorBusRoute = tokenManager.getUserDetails()[1]!!
         setupViews()
         setupObservers()
 
         setupNfcRead()
     }
 
-    private fun setupNfcRead() {
+     private fun setupNfcRead() {
         /**
          * Code to enable foreground read [PART - 1/3]
          */
@@ -78,8 +93,9 @@ class ScannerActivity : AppCompatActivity() {
         if(nfcResult.first) {
             studentViewModel.verifyEnrollment(nfcResult.second)
         } else {
-            binding.tvEnrollment.text = "ERROR"
-            binding.tvScanResult.text = nfcResult.second
+            // TODO: Show Error in Reading the CARD
+//            binding.tvEnrollment.text = "ERROR"
+//            binding.tvScanResult.text = nfcResult.second
         }
     }
 
@@ -116,103 +132,121 @@ class ScannerActivity : AppCompatActivity() {
     private fun setupViews() {
         val userDetails = tokenManager.getUserDetails()
 //        binding.tvRouteCategory.text = "${userDetails[1]} : [${userDetails[2]}]"
-        binding.tvRouteCategory.text = "Bus Route = ${userDetails[1]}"
+//        binding.tvRouteCategory.text = "Bus Route = ${userDetails[1]}"
 
-        binding.btnTryAgain.setOnClickListener {
-            studentViewModel.getStudentListResponse()
-        }
+//        binding.btnTryAgain.setOnClickListener {
+//            // TODO: I guess we don't need this button
+////            studentViewModel.getStudentListResponse()
+//        }
 
-//        binding.layoutEnrollment.setOnClickListener {
-        binding.btnViewMore.setOnClickListener {
-            studentViewModel.getStudentDetailsResponse()
-            binding.layoutScanning.visibility = View.INVISIBLE
-            binding.cvStudentDetails.visibility = View.VISIBLE
-//            binding.layoutEnrollment.isEnabled = false
-            binding.btnViewMore.isEnabled = false
-        }
+        // TODO: BtnViewMore is removed [maybe mimic its functions]
+//        binding.btnViewMore.setOnClickListener {
+//            studentViewModel.getStudentDetailsResponse()
+//            binding.layoutScanning.visibility = View.INVISIBLE
+//            binding.cvStudentDetails.visibility = View.VISIBLE
+////            binding.layoutEnrollment.isEnabled = false
+//            binding.btnViewMore.isEnabled = false
+//        }
 
-        binding.tvCancel.setOnClickListener {
-            binding.cvStudentDetails.visibility = View.GONE
-            binding.layoutScanning.visibility = View.VISIBLE
-        }
+        // TODO: tvCancel is also removed
+//        binding.tvCancel.setOnClickListener {
+//            binding.cvStudentDetails.visibility = View.GONE
+//            binding.layoutScanning.visibility = View.VISIBLE
+//        }
 
     }
 
     private fun setupObservers() {
-        studentViewModel.studentListLiveData.observe(this) {
+
+        studentViewModel.studentDetailsLiveData.observe(this) {
+//            binding.layoutScanning.visibility = View.INVISIBLE
+//            binding.cvError.visibility = View.GONE
+//            binding.cvLoading.visibility = View.INVISIBLE
             updateLoadingViews(isLoading = false)
+
+            // resetting default image
+            binding.imageViewStudentProfile.setImageDrawable(getDrawable(R.drawable.ss_student))
+
             when(it) {
-                is NetworkResult.Loading -> { updateLoadingViews(isLoading = true)}
+                is NetworkResult.Loading -> {
+                    updateLoadingViews(isLoading = true)
+                }
                 is NetworkResult.Error -> {
+                    // TODO: Errors [1] Can't read card, [2] Couldn't fetch details
+                    // TODO: try again ka dekhlo
                     binding.cvError.visibility = View.VISIBLE
                     binding.tvErrorMessage.text = it.message
                 }
                 is NetworkResult.Success -> {
-                    studentViewModel.setValidStudentList(it.data!!.cityList[0].student_list)
-                    studentViewModel.setInvalidStudentList(it.data.notSubscribed[0].student_list)
+                    binding.cvStudentDetails.visibility = View.VISIBLE
+                    binding.layoutScanResult.visibility = View.VISIBLE
+                    handleViewsAccordingToResponse(it.data!!)
+                }
+            }
 
-                    binding.layoutScanning.visibility = View.VISIBLE
-                    binding.lottieTapCard.playAnimation()
 
-                    Log.i(TAG, "validStudents = ${studentViewModel.validStudentList}")
-                    Log.i(TAG, "invalidStudents = ${studentViewModel.invalidStudentList}")
+        }
+    }
+
+    private fun handleViewsAccordingToResponse(data: StudentDetailsResponse) {
+        Log.i(TAG, "handleViewsAccordingToResponse: data = $data")
+        val studentDetails = data.student_detail
+
+        lifecycleScope.launch{
+            val profileBitmapResult = NfcUtil.convertBase64Testing(studentDetails.image)
+            if(profileBitmapResult.first != SUCCESSFUL_KEY) {
+                // TODO: ERROR
+//                updateLoadingViews(isLoading = false)
+//                binding.cvError.visibility = View.VISIBLE
+//                binding.tvErrorMessage.text = profileBitmapResult.first
+
+            } else {
+                if(profileBitmapResult.second != null) {
+//                    binding.imageViewStudentProfile.setImageBitmap(profileBitmapResult.second)
                 }
             }
         }
 
-        studentViewModel.scanStatusLiveData.observe(this) {
-            binding.cvStudentDetails.visibility = View.GONE
-            binding.layoutScanResult.visibility = View.VISIBLE
-            binding.layoutScanning.visibility = View.VISIBLE
-            binding.lottieSubscribed.visibility = View.INVISIBLE
-            binding.lottieNotSubscribed.visibility = View.INVISIBLE
-            binding.lottieOtherBus.visibility = View.INVISIBLE
+        binding.tvStudentName.text = studentDetails.name
+        binding.tvStudentRouteCategory.text = studentDetails.route_category
+        binding.tvStudentEnrollment.text = studentDetails.enroll_number
 
-//            binding.layoutEnrollment.isEnabled = true
-            binding.btnViewMore.isEnabled = true
+        if(studentDetails.subscription_status) {
+            if(studentDetails.route_category == conductorBusRoute) {
+                binding.lottieSubscribed.visibility = View.VISIBLE
+                binding.lottieSubscribed.playAnimation()
+                binding.tvBusScanStatus.text = getString(R.string.scan_result_subscribed_text)
 
-            binding.tvEnrollment.text = it.enrollment
-            when(it) {
-                is ScanStatus.Subscribed -> {
-                    binding.lottieSubscribed.visibility = View.VISIBLE
-                    binding.lottieSubscribed.playAnimation()
-                    binding.tvScanResult.text = getString(R.string.scan_result_subscribed_text)
-                }
-                is ScanStatus.NotSubscribed -> {
-                    binding.lottieNotSubscribed.visibility = View.VISIBLE
-                    binding.lottieNotSubscribed.playAnimation()
-                    binding.tvScanResult.text = getString(R.string.scan_result_not_subscribed_text)
-                }
-                is ScanStatus.OtherBus -> {
-                    binding.lottieOtherBus.visibility = View.VISIBLE
-                    binding.lottieOtherBus.playAnimation()
-                    binding.tvScanResult.text = getString(R.string.scan_result_other_bus_text)
+            } else {
+                binding.lottieOtherBus.visibility = View.VISIBLE
+                binding.lottieOtherBus.playAnimation()
+                binding.tvBusScanStatus.text = getString(R.string.scan_result_other_bus_text)
+
+            }
+
+        } else {
+            binding.lottieNotSubscribed.visibility = View.VISIBLE
+            binding.lottieNotSubscribed.playAnimation()
+            binding.tvBusScanStatus.text = getString(R.string.scan_result_not_subscribed_text)
+
+
+        }
+
+        lifecycleScope.launch{
+            val profileBitmapResult = NfcUtil.convertBase64Testing(studentDetails.image)
+            if(profileBitmapResult.first != SUCCESSFUL_KEY) {
+                // TODO: ERROR
+//                updateLoadingViews(isLoading = false)
+//                binding.cvError.visibility = View.VISIBLE
+//                binding.tvErrorMessage.text = profileBitmapResult.first
+
+            } else {
+                if(profileBitmapResult.second != null) {
+//                    binding.imageViewStudentProfile.setImageBitmap(profileBitmapResult.second)
                 }
             }
         }
 
-        studentViewModel.studentDetailsLiveData.observe(this) {
-            binding.progressBar2.visibility = View.GONE
-            binding.tvStudentName.visibility = View.GONE
-            binding.tvStudentRouteCategory.visibility = View.GONE
-
-            when(it) {
-                is NetworkResult.Loading -> {
-                    binding.progressBar2.visibility = View.VISIBLE
-                    binding.tvStudentDetailStatus.text = getString(R.string.fetching_details_text)
-                }
-                is NetworkResult.Error -> {
-                    binding.tvStudentDetailStatus.text = it.message
-                }
-                is NetworkResult.Success -> {
-                    binding.tvStudentDetailStatus.text = it.data!!.studentDetail[0].enroll_number
-                    binding.tvStudentName.text = it.data.studentDetail[0].name
-                    binding.tvStudentName.visibility = View.VISIBLE
-                    binding.tvStudentRouteCategory.text = it.data.studentDetail[0].route_category
-                    binding.tvStudentRouteCategory.visibility = View.VISIBLE
-                }
-            }
-        }
     }
 
     private fun updateLoadingViews(isLoading: Boolean) {
@@ -220,6 +254,12 @@ class ScannerActivity : AppCompatActivity() {
         binding.cvError.visibility = View.INVISIBLE
         binding.layoutScanning.visibility = View.INVISIBLE
 
+        binding.cvStudentDetails.visibility = View.INVISIBLE
+        binding.layoutScanResult.visibility = View.INVISIBLE
+
+        binding.lottieSubscribed.visibility = View.INVISIBLE
+        binding.lottieNotSubscribed.visibility = View.INVISIBLE
+        binding.lottieOtherBus.visibility = View.INVISIBLE
 
     }
 
