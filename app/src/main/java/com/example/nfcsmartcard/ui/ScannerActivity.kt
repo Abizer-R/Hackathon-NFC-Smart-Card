@@ -18,6 +18,7 @@ import com.example.nfcsmartcard.data.network.model.studentDetailModel.StudentDet
 import com.example.nfcsmartcard.databinding.ActivityScannerBinding
 import com.example.nfcsmartcard.utils.Constants.BASE64_IMAGE_TESTING
 import com.example.nfcsmartcard.utils.Constants.SUCCESSFUL_KEY
+import com.example.nfcsmartcard.utils.Constants.getLocalBase64
 import com.example.nfcsmartcard.utils.NetworkResult
 import com.example.nfcsmartcard.utils.NfcUtil
 import com.example.nfcsmartcard.utils.ScanStatus
@@ -233,16 +234,17 @@ class ScannerActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch{
-            val profileBitmapResult = NfcUtil.convertBase64Testing(studentDetails.image)
+            val base64 = getLocalBase64(studentDetails.enroll_number)
+            val profileBitmapResult = NfcUtil.convertBase64Testing(base64)
             if(profileBitmapResult.first != SUCCESSFUL_KEY) {
                 // TODO: ERROR
-//                updateLoadingViews(isLoading = false)
-//                binding.cvError.visibility = View.VISIBLE
-//                binding.tvErrorMessage.text = profileBitmapResult.first
+                updateLoadingViews(isLoading = false)
+                binding.cvError.visibility = View.VISIBLE
+                binding.tvErrorMessage.text = profileBitmapResult.first
 
             } else {
                 if(profileBitmapResult.second != null) {
-//                    binding.imageViewStudentProfile.setImageBitmap(profileBitmapResult.second)
+                    binding.imageViewStudentProfile.setImageBitmap(profileBitmapResult.second)
                 }
             }
         }
