@@ -3,13 +3,17 @@ package com.example.nfcsmartcard.utils
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.os.Parcelable
+import android.util.Base64
 import android.util.Log
 import android.widget.TextView
 import com.example.nfcsmartcard.R
+import com.example.nfcsmartcard.utils.Constants.SUCCESSFUL_KEY
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import java.util.*
@@ -79,6 +83,16 @@ object NfcUtil {
         } catch (e: UnsupportedEncodingException) {
             Log.e("UnsupportedEncoding", e.toString())
             return null
+        }
+    }
+
+    suspend fun convertBase64Testing(base64String: String) : Pair<String, Bitmap?> {
+        try {
+            val decodeString = Base64.decode(base64String, Base64.DEFAULT)
+            val decoded = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.size)
+            return Pair(SUCCESSFUL_KEY, decoded)
+        } catch (e: Exception) {
+            return Pair(e.message.toString(), null)
         }
     }
 }
