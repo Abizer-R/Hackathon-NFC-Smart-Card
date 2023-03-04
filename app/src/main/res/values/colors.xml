@@ -8,7 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="light_gray">#e0e0e0</color>
+    <color name="light_gray">#f6f6f6</color>
     <color name="blue">#43abfd</color>
     <color name="red">#d9494d</color>
+
+
+    <color name="primary">#323232</color>
+    <color name="secondary">#fabb18</color>
+
+    <color name="color_subscribed">#24d190</color>
+    <color name="color_other_bus">#f5b326</color>
+    <color name="color_not_subscribed">#d93a45</color>
 </resources>

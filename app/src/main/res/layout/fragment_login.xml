@@ -51,8 +51,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email_example"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/bg_light_grey_rounded"
                 android:importantForAutofill="no"
-                android:inputType="textEmailAddress"/>
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -82,7 +87,8 @@
                     android:textSize="16sp"
                     android:textColor="@color/black"
                     android:background="@drawable/bg_country_code"
-                    android:paddingVertical="4dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingVertical="8dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="12dp"/>
 
@@ -91,10 +97,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/contact_example"
-                    android:importantForAutofill="no"
                     android:inputType="number"
                     android:layout_weight="4"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_light_grey_rounded"
+                    android:importantForAutofill="no"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -122,7 +133,11 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="@string/password_example"
+            android:background="@drawable/bg_light_grey_rounded"
             android:importantForAutofill="no"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"/>
 
 
@@ -145,10 +160,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signin_label"
-            android:backgroundTint="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/primary"
+            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
             app:cornerRadius="5dp"/>
 
         <TextView

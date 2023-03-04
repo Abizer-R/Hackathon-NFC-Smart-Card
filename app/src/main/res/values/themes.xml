@@ -22,6 +22,8 @@
 
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
 
         <!-- Defining that new color in ColorPrimaryDark -->
 <!--        <item name="colorPrimaryDark">@color/white</item>-->
