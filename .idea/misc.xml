@@ -3,10 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/drawable/bg_country_code.xml" value="0.1585" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/drawable/bg_light_grey_rounded.xml" value="0.1585" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/drawable/bg_round_corners_stroke.xml" value="0.1585" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/drawable/bg_welcome_user.xml" value="0.1585" />
         <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/activity_main.xml" value="0.13177083333333334" />
         <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/activity_scanner.xml" value="0.264" />
-        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/fragment_home.xml" value="0.13177083333333334" />
-        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/fragment_login.xml" value="0.13177083333333334" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/fragment_home.xml" value="0.264" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/fragment_login.xml" value="0.264" />
+        <entry key="..\:/Users/abizer's ideapad/AndroidStudioProjects/NFCSmartCard/app/src/main/res/layout/fragment_splash_screen.xml" value="0.2609375" />
       </map>
     </option>
   </component>

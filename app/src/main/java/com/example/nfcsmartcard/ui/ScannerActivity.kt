@@ -217,11 +217,14 @@ class ScannerActivity : AppCompatActivity() {
                 binding.lottieSubscribed.visibility = View.VISIBLE
                 binding.lottieSubscribed.playAnimation()
                 binding.tvBusScanStatus.text = getString(R.string.scan_result_subscribed_text)
+                binding.tvBusScanStatus.setTextColor(resources.getColor(R.color.color_subscribed))
 
             } else {
                 binding.lottieOtherBus.visibility = View.VISIBLE
                 binding.lottieOtherBus.playAnimation()
                 binding.tvBusScanStatus.text = getString(R.string.scan_result_other_bus_text)
+                binding.tvBusScanStatus.setTextColor(resources.getColor(R.color.color_other_bus))
+
 
             }
 
@@ -229,6 +232,9 @@ class ScannerActivity : AppCompatActivity() {
             binding.lottieNotSubscribed.visibility = View.VISIBLE
             binding.lottieNotSubscribed.playAnimation()
             binding.tvBusScanStatus.text = getString(R.string.scan_result_not_subscribed_text)
+            binding.tvBusScanStatus.setTextColor(resources.getColor(R.color.color_not_subscribed))
+
+            binding.tvStudentRouteCategory.text = ""
 
 
         }
@@ -254,7 +260,7 @@ class ScannerActivity : AppCompatActivity() {
     private fun updateLoadingViews(isLoading: Boolean) {
         binding.cvLoading.visibility = if(isLoading) View.VISIBLE else View.INVISIBLE
         binding.cvError.visibility = View.INVISIBLE
-        binding.layoutScanning.visibility = View.INVISIBLE
+        binding.cvLayoutScanning.visibility = View.INVISIBLE
 
         binding.cvStudentDetails.visibility = View.INVISIBLE
         binding.layoutScanResult.visibility = View.INVISIBLE
@@ -262,6 +268,8 @@ class ScannerActivity : AppCompatActivity() {
         binding.lottieSubscribed.visibility = View.INVISIBLE
         binding.lottieNotSubscribed.visibility = View.INVISIBLE
         binding.lottieOtherBus.visibility = View.INVISIBLE
+
+        binding.tvBusScanStatus.text = ""
 
     }
 

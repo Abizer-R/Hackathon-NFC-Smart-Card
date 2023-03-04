@@ -37,9 +37,9 @@ class LoginFragment : Fragment() {
     ): View? {
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
 
-        if(tokenManager.getToken() != null) {
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-        }
+//        if(tokenManager.getToken() != null) {
+//            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+//        }
         return binding.root
     }
 
